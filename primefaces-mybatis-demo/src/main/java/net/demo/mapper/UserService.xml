@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.csi.interfaces.IUserService">
+<mapper namespace="net.demo.service.IUserService">
 	
 
-	<select id="search" parameterType="com.csi.domain.User" 
-		resultType="com.csi.domain.User">  
+	<select id="search" parameterType="net.demo.domain.User" 
+		resultType="net.demo.domain.User">  
 		SELECT *
 		FROM Users
 		<where>
@@ -24,7 +24,7 @@
 	  	order by userId
 	</select>
 	
-	<insert id="insert" parameterType="com.csi.domain.User" 
+	<insert id="insert" parameterType="net.demo.domain.User" 
 		useGeneratedKeys="true"    	keyProperty="id" keyColumn="id"
 		>
 		insert into Users
@@ -44,7 +44,7 @@
         
     
 	</insert>
-	<update id="update" parameterType="com.csi.domain.User">
+	<update id="update" parameterType="net.demo.domain.User">
 		update Users
 	    set 	UserId=#{userId}
 	           ,Password=#{password}

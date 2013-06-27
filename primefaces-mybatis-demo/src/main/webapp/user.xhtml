@@ -1,189 +1,119 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
-
 <ui:composition template="/template.xhtml">
 	<ui:define name="body">
 		<h:form id="main">
 			<p:hotkey bind="n" handler="clickButton('main:btnNew')" />
 			<p:hotkey bind="r" handler="clickButton('main:btnReset')" />
 			<p:growl id="growl" life="4000" showDetail="true" autoUpdate="true" />
-			<p:panel header="User Search Form" style="width: 700;"  toggleable="true">
-
+			<p:panel header="User Search Form" style="width: 700;" toggleable="true">
 				<p:panelGrid columns="4" cellpadding="2" id="panelSearch">
-
-
 					<f:facet name="footer" style="text-align: right">
-						<p:commandButton id="btnSearch" value="Search"
-							action="#{userManaged.search}" ajax="true" icon="ui-icon-search"
+						<p:commandButton id="btnSearch" value="Search" action="#{userManaged.search}" ajax="true" icon="ui-icon-search"
 							update="panelResult" />
-
-						<p:commandButton value="Reset" update="panelSearch, panelResult"
-							icon="ui-icon-arrowreturnthick-1-w" immediate="true"
-							action="#{userManaged.reset}" process="@this" id="btnReset" />
-
-						<p:commandButton id="btnNew" value="New"
-							oncomplete="rowDialog.show()" action="#{userManaged.addAction}"
+						<p:commandButton value="Reset" update="panelSearch, panelResult" icon="ui-icon-arrowreturnthick-1-w"
+							immediate="true" action="#{userManaged.reset}" process="@this" id="btnReset" />
+						<p:commandButton id="btnNew" value="New" oncomplete="rowDialog.show()" action="#{userManaged.addAction}"
 							icon="ui-icon-circle-plus" update=":detail:display" />
-
 					</f:facet>
-
 					<p:outputLabel value="User Id" />
 					<p:inputText value="#{userManaged.userIdSearch}" label="userId" id="idSearch" />
 					<p:outputLabel value="User Name" />
 					<p:inputText value="#{userManaged.nameSearch}" label="UserName" id="nameSearch" />
 					<p:outputLabel value="Update Date" />
-					<p:calendar value="#{userManaged.updateDateSearch}"
-						pattern="dd MMM yyyy" id="popupButtonCal" showOn="button" />
-
+					<p:calendar value="#{userManaged.updateDateSearch}" pattern="dd MMM yyyy" id="popupButtonCal" showOn="button" />
 				</p:panelGrid>
-
 				<p:blockUI block="panelSearch" trigger="btnSearch" />
 			</p:panel>
-			 
 			<p:panel id="panelResult">
-				
-				<p:dataTable var="row" value="#{userManaged.resultSearch}"
-					selectionMode="single" rowKey="#{row.id}" style="width: 700"
-					selection="#{userManaged.selected}" id="dataResult"
-					paginator="true" rows="#{constDataTable.pageRows}"
-					paginatorTemplate="#{constDataTable.paginatorTemplate}"
-					rowsPerPageTemplate="#{constDataTable.rowsPerPageTemplate}"
-					scrollable="true" scrollHeight="#{constDataTable.scrollHeight}"
-					binding="#{userManaged.dtResult}"
-				>
-
+				<p:dataTable var="row" value="#{userManaged.resultSearch}" selectionMode="single" rowKey="#{row.id}"
+					style="width: 700" selection="#{userManaged.selected}" id="dataResult" paginator="true"
+					rows="#{constDataTable.pageRows}" paginatorTemplate="#{constDataTable.paginatorTemplate}"
+					rowsPerPageTemplate="#{constDataTable.rowsPerPageTemplate}" scrollable="true"
+					scrollHeight="#{constDataTable.scrollHeight}" binding="#{userManaged.dtResult}">
 					<p:column sortBy="#{row.userId}">
 						<f:facet name="header">
 							<h:outputText value="User Id" />
 						</f:facet>
-						<p:commandLink value="#{row.userId}"
-							action="#{userManaged.view(row)}" oncomplete="rowDialog.show()"
+						<p:commandLink value="#{row.userId}" action="#{userManaged.view(row)}" oncomplete="rowDialog.show()"
 							update=":detail:display" id="linkDetail" />
-
 					</p:column>
-
 					<p:column sortBy="#{row.firstName}">
 						<f:facet name="header">
 							<h:outputText value="First Name" />
 						</f:facet>
 						<h:outputText value="#{row.firstName}" />
 					</p:column>
-
 					<p:column sortBy="#{row.lastName}">
 						<f:facet name="header">
 							<h:outputText value="Last Name" />
 						</f:facet>
 						<h:outputText value="#{row.lastName}" />
 					</p:column>
-
 					<p:column sortBy="#{row.updateDate}">
 						<f:facet name="header">
 							<h:outputText value="Updated Date" />
 						</f:facet>
-						<h:outputText value="#{row.updateDate}" >
+						<h:outputText value="#{row.updateDate}">
 							<f:convertDateTime pattern="dd MMM yyyy HH:mm:ss" />
 						</h:outputText>
 					</p:column>
-
 					<f:facet name="footer">
-						<h:outputText
-							value="Total: #{fn:length(userManaged.resultSearch)}" id="rowCount"/>
-							
+						<h:outputText value="Total: #{fn:length(userManaged.resultSearch)}" id="rowCount" />
 					</f:facet>
 				</p:dataTable>
-			
 			</p:panel>
-			<h:commandLink id="pdf">
-                          <p:outputLabel value="Export"></p:outputLabel>
-                            <p:dataExporter type="csv" target="dataResult" fileName="users"/>
-                        </h:commandLink>
+			
 		</h:form>
-
 		<h:form id="detail">
-			<p:dialog id="dialog" header="User Detail" widgetVar="rowDialog"
-				resizable="true" width="400" showEffect="clip" hideEffect="explode"
-				position="center center" closeOnEscape="true">
-
+			<p:dialog id="dialog" header="User Detail" widgetVar="rowDialog" resizable="true" width="400" showEffect="clip"
+				hideEffect="explode" position="center center" closeOnEscape="true">
 				<h:panelGrid id="display" columns="2" cellpadding="2">
-
-					<p:outputLabel value="Id:"
-						rendered="#{userManaged.selected.userId!=null}" />
-					<p:inputText value="#{userManaged.selected.id}"
-						rendered="#{userManaged.selected.userId!=null}" disabled="true" />
-
+					<p:outputLabel value="Id:" rendered="#{userManaged.selected.userId!=null}" />
+					<p:inputText value="#{userManaged.selected.id}" rendered="#{userManaged.selected.userId!=null}" disabled="true" />
 					<p:outputLabel value="User Id:" />
-					<p:inputText value="#{userManaged.selected.userId}"
-						style="width: 150px" required="true" label="User Id" id="userId" />
-
+					<p:inputText value="#{userManaged.selected.userId}" style="width: 150px" required="true" label="User Id"
+						id="userId" />
 					<p:outputLabel value="First Name:" />
-					<p:inputText value="#{userManaged.selected.firstName}"
-						style="width: 150px" required="true" label="First Name"
+					<p:inputText value="#{userManaged.selected.firstName}" style="width: 150px" required="true" label="First Name"
 						id="firstName" />
-
 					<p:outputLabel value="Last Name:" />
-					<p:inputText value="#{userManaged.selected.lastName}"
-						style="width: 150px" label="Last Name" id="lastName"/>
-
-					<p:outputLabel value="Created Date:"
-						rendered="#{userManaged.selected.userId!=null}" />
-					<p:inputText value="#{userManaged.selected.createDate}"
-						rendered="#{userManaged.selected.userId!=null}" readonly="true"
-						style="width: 150px">
+					<p:inputText value="#{userManaged.selected.lastName}" style="width: 150px" label="Last Name" id="lastName" />
+					<p:outputLabel value="Created Date:" rendered="#{userManaged.selected.userId!=null}" />
+					<p:inputText value="#{userManaged.selected.createDate}" rendered="#{userManaged.selected.userId!=null}"
+						readonly="true" style="width: 150px">
 						<f:convertDateTime pattern="dd MMM yyyy HH:mm:ss" />
 					</p:inputText>
-					<p:outputLabel value="Update Date:" rendered="#{userManaged.selected.userId!=null}"/>
-					<p:inputText value="#{userManaged.selected.updateDate}"
-						rendered="#{userManaged.selected.userId!=null}" readonly="true"
-						style="width: 150px">
+					<p:outputLabel value="Update Date:" rendered="#{userManaged.selected.userId!=null}" />
+					<p:inputText value="#{userManaged.selected.updateDate}" rendered="#{userManaged.selected.userId!=null}"
+						readonly="true" style="width: 150px">
 						<f:convertDateTime pattern="dd MMM yyyy HH:mm:ss" />
 					</p:inputText>
-
-					<p:outputLabel value="Update By:"
-						rendered="#{userManaged.selected.userId!=null}" />
-					<p:inputText value="#{userManaged.selected.updateBy}"
-						rendered="#{userManaged.selected.userId!=null}" readonly="true"
-						style="width: 150px" />
-
+					<p:outputLabel value="Update By:" rendered="#{userManaged.selected.userId!=null}" />
+					<p:inputText value="#{userManaged.selected.updateBy}" rendered="#{userManaged.selected.userId!=null}"
+						readonly="true" style="width: 150px" />
 					<f:facet name="footer">
-						<p:commandButton id="btnSave" value="Save" icon="ui-icon-check"
-							action="#{userManaged.save}"
-							oncomplete="handleDialog(xhr, status, args, rowDialog)"
-							update=":main:growl :main:panelResult" />
-						<p:commandButton id="btnDelete" value="Delete"
-							icon="ui-icon-circle-minus"
-							onclick="confirmation.show();return false;"
-							oncomplete="rowDialog.hide()"
+						<p:commandButton id="btnSave" value="Save" icon="ui-icon-check" action="#{userManaged.save}"
+							oncomplete="handleDialog(xhr, status, args, rowDialog)" update=":main:growl :main:panelResult" />
+						<p:commandButton id="btnDelete" value="Delete" icon="ui-icon-circle-minus"
+							onclick="confirmation.show();return false;" oncomplete="rowDialog.hide()"
 							rendered="#{userManaged.selected.userId!=null}" />
-
-						<p:commandButton id="btnCancel" value="Cancel"
-							icon="ui-icon-cancel" oncomplete="rowDialog.hide()"
-							process="@this">
+						<p:commandButton id="btnCancel" value="Cancel" icon="ui-icon-cancel" oncomplete="rowDialog.hide()" process="@this">
 							<p:resetInput target=":detail:display" />
 						</p:commandButton>
 					</f:facet>
 				</h:panelGrid>
 			</p:dialog>
-			<p:confirmDialog id="confirmDialog"
-				message="Do you want to delete record?" header="Confirm"
-				severity="alert" widgetVar="confirmation" appendToBody="true">
-
-				<p:commandButton id="confirm" value="Yes"
-					update=":main:growl :main:panelResult"
-					oncomplete="rowDialog.hide(); confirmation.hide()"
-					action="#{userManaged.delete}" process="@this" />
-				<p:commandButton id="decline" value="No"
-					onclick="confirmation.hide();rowDialog.hide();" />
-
+			<p:confirmDialog id="confirmDialog" message="Do you want to delete record?" header="Confirm" severity="alert"
+				widgetVar="confirmation" appendToBody="true">
+				<p:commandButton id="confirm" value="Yes" update=":main:growl :main:panelResult"
+					oncomplete="rowDialog.hide(); confirmation.hide()" action="#{userManaged.delete}" process="@this" />
+				<p:commandButton id="decline" value="No" onclick="confirmation.hide();rowDialog.hide();" />
 			</p:confirmDialog>
 		</h:form>
-
 	</ui:define>
-
 </ui:composition>
 </html>
