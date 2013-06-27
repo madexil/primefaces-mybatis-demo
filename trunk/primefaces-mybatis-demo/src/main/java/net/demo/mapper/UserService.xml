@@ -7,18 +7,19 @@
 
 	<select id="search" parameterType="net.demo.domain.User" 
 		resultType="net.demo.domain.User">  
+
 		SELECT *
 		FROM Users
 		<where>
 		    <if test="userId != null">
-		         userId like '%'+#{userId}+'%'
+		         userId like '%'||#{userId}||'%'
 		    </if>
 		    <if test="firstName != null">
 				/*search both firstName and lastName*/
-		        AND (firstName like '%'+#{firstName}+'%' or lastName like '%'+#{firstName}+'%')
+		        AND (firstName like '%'||#{firstName}||'%' or lastName like '%'|| #{firstName} || '%')
 		    </if>
 	    	<if test="updateDate !=null">
-	    		AND DATEADD(dd, DATEDIFF(dd, 0, updateDate), 0) = #{updateDate}
+	    		AND date(updateDate) = #{updateDate}
 	    	</if>
 	  	</where> 
 	  	order by userId
