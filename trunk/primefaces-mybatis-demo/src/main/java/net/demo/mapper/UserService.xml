@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.csi.interfaces.IUserService">
+	
+
+	<select id="search" parameterType="com.csi.domain.User" 
+		resultType="com.csi.domain.User">  
+		SELECT *
+		FROM Users
+		<where>
+		    <if test="userId != null">
+		         userId like '%'+#{userId}+'%'
+		    </if>
+		    <if test="firstName != null">
+				/*search both firstName and lastName*/
+		        AND (firstName like '%'+#{firstName}+'%' or lastName like '%'+#{firstName}+'%')
+		    </if>
+	    	<if test="updateDate !=null">
+	    		AND DATEADD(dd, DATEDIFF(dd, 0, updateDate), 0) = #{updateDate}
+	    	</if>
+	  	</where> 
+	  	order by userId
+	</select>
+	
+	<insert id="insert" parameterType="com.csi.domain.User" 
+		useGeneratedKeys="true"    	keyProperty="id" keyColumn="id"
+		>
+		insert into Users
+	           (UserId
+	           ,Password
+	           ,FirstName
+	           ,LastName	           
+	           ,UpdateBy)
+	     VALUES
+	           (#{userId}
+	           ,#{password}
+	           ,#{firstName}
+	           ,#{lastName}           
+	           ,#{updateBy})
+	     
+	    
+        
+    
+	</insert>
+	<update id="update" parameterType="com.csi.domain.User">
+		update Users
+	    set 	UserId=#{userId}
+	           ,Password=#{password}
+	           ,FirstName=#{firstName}
+	           ,LastName=#{lastName}       
+	           ,UpdateBy=#{updateBy}
+	           ,UpdateDate=#{updateDate}
+	     WHERE
+	           Id=#{id}
+    
+	</update>
+	<delete id="delete" parameterType="java.lang.String">
+		delete from Users
+		where UserId=#{userId}
+	</delete>
+</mapper>
