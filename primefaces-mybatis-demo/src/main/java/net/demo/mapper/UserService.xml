@@ -7,8 +7,12 @@
 
 	<select id="search" parameterType="net.demo.domain.User" 
 		resultType="net.demo.domain.User">  
-
-		SELECT *
+		/* sqlite had to covert datetime to seconds from 1970/01/01 for java datetime*/  
+		SELECT id, userId, firstName, lastName
+			, cast(strftime('%s', createDate) as number)*1000 createDate
+			, cast(strftime('%s', updateDate) as number)*1000 updateDate
+			, updateBy
+			, password
 		FROM Users
 		<where>
 		    <if test="userId != null">
@@ -18,9 +22,7 @@
 				/*search both firstName and lastName*/
 		        AND (firstName like '%'||#{firstName}||'%' or lastName like '%'|| #{firstName} || '%')
 		    </if>
-	    	<if test="updateDate !=null">
-	    		AND date(updateDate) = #{updateDate}
-	    	</if>
+	    	
 	  	</where> 
 	  	order by userId
 	</select>
@@ -59,6 +61,6 @@
 	</update>
 	<delete id="delete" parameterType="java.lang.String">
 		delete from Users
-		where UserId=#{userId}
+		where id=#{itemId}
 	</delete>
 </mapper>
