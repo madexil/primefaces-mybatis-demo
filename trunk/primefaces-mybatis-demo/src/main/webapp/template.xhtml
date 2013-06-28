@@ -1,47 +1,45 @@
-<?xml version='1.0' encoding='UTF-8' ?> 
+<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Primefaces Ajax CRUD</title>
+	<style type="text/css">
+.accordionMenu .ui-menu {
+	width: 100% !important;
+}
 
-    <h:head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />       
-        <title>Primefaces Ajax CRUD</title>
-	    <style type="text/css">
-			.accordionMenu .ui-menu {
-			 width:100% !important; 
-			 
-			}
-			.accordionMenu .ui-accordion-content {
-		     width:92% !important; 
-			 padding:0 !important;
-			 overflow:inherit !important;
-			}
-			.ui-widget {
-			   font-size: 12px !important;
-			}
-			/* default/non-selected menuitem style */
-			.orders-menuitem-text .ui-menuitem-text {
-			    font-size: 90% !important;
-			}
-			
-			/* selected menuitem style */
-			.orders-menuitem-selected .ui-menuitem-text {
-			    font-size: 95% !important;
-			    font-weight: bolder !important;
-			}
-			.ui-inputfield[disabled], .ui-inputfield[disabled].ui-state-focus {
-			    border: 0 !important;
-			    box-shadow: none !important;
-			    outline: 0 !important;
-			}   
-	    </style>    
-    </h:head>
-	
-    <h:body>
-    	<h:outputScript id="handleDialog" target="body">
+.accordionMenu .ui-accordion-content {
+	width: 92% !important;
+	padding: 0 !important;
+	overflow: inherit !important;
+}
+
+.ui-widget {
+	font-size: 12px !important;
+}
+/* default/non-selected menuitem style */
+.orders-menuitem-text .ui-menuitem-text {
+	font-size: 90% !important;
+}
+
+/* selected menuitem style */
+.orders-menuitem-selected .ui-menuitem-text {
+	font-size: 95% !important;
+	font-weight: bolder !important;
+}
+
+.ui-inputfield[disabled],.ui-inputfield[disabled].ui-state-focus {
+	border: 0 !important;
+	box-shadow: none !important;
+	outline: 0 !important;
+}
+</style>
+</h:head>
+<h:body>
+	<h:outputScript id="handleDialog" target="body">
 		/* <![CDATA[ */
 			function handleDialog(xhr, status, args, dlg) {			
 				
@@ -60,34 +58,50 @@
 			}
 			/* ]]> */
 		</h:outputScript>
-		<p:layout fullPage="true"> 
-			
-        	<p:layoutUnit position="west" size="200" header="MENU" resizable="true" collapsed="false" closable="false" collapsible="true">
-				<h:form>		        		      
-			        <p:accordionPanel styleClass="accordionMenu">  
-					 <p:tab title="Security">  
-					  <p:menu>
-					  	<p:menuitem value="User" action="user.xhtml" update=":content" ajax="false" /> 
-					    
-					  </p:menu>
-					  </p:tab>
-					</p:accordionPanel>
-					
-					
-				</h:form>
-				  	
-		    </p:layoutUnit>
-		    
-			<p:layoutUnit position="center">
-		        <h:panelGroup id="content" layout="block">
-		        	<center>
-		            	<ui:insert name="body">Content</ui:insert>
-		            </center>
-		        </h:panelGroup>
-		    </p:layoutUnit>
-		    
-		</p:layout>
-		
-    </h:body>
-	
+	<p:layout fullPage="true">
+		<p:layoutUnit position="west" size="200" header="MENU" resizable="true" collapsed="false" closable="false"
+			collapsible="true">
+			<h:form>
+				<p:accordionPanel styleClass="accordionMenu">
+					<p:tab title="Security">
+						<p:menu>
+							<p:menuitem value="User" action="user.xhtml" update=":content" ajax="false" />
+						</p:menu>
+					</p:tab>
+				</p:accordionPanel>
+			</h:form>
+		</p:layoutUnit>
+		<p:layoutUnit position="center">
+			<h:panelGroup id="content" layout="block">
+				<center>
+					<ui:insert name="body">Content</ui:insert>
+				</center>
+			</h:panelGroup>
+			<pe:ajaxErrorHandler type="java.lang.Exception" button="Close warning!">
+				<f:facet name="title">
+				        Error:<span style="color: red;">{error-name}</span>
+				</f:facet>
+				<f:facet name="msgbody">
+					<div>
+						<h:form>
+							<p:tabView>
+								<p:tab title="Message">
+									<h:panelGrid columns="2">
+										<h:outputLabel value="Error message:" />
+										<h:outputText value="{error-message}" style="font-size: 1.2em;color:navy;" />
+										<h:outputLabel value="Server name:" />
+										<h:outputText value="{error-hostname}" style="font-size: 1.2em;color:navy;" />
+									</h:panelGrid>
+								</p:tab>
+								<p:tab title="DetailError">
+									<div style="overflow: auto; height: 300px; width: 700px;">{error-stacktrace}</div>
+								</p:tab>
+							</p:tabView>
+						</h:form>
+					</div>
+				</f:facet>
+			</pe:ajaxErrorHandler>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
 </html>

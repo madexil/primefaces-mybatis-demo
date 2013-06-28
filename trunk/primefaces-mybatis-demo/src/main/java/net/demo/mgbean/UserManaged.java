@@ -1,7 +1,6 @@
 package net.demo.mgbean;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -14,7 +13,6 @@ import net.demo.service.UserService;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 
-
 public class UserManaged implements Serializable {
 
 	/**
@@ -24,9 +22,9 @@ public class UserManaged implements Serializable {
 
 	private User selected;
 
-	private String userIdSearch = null;
+	private String idSearch = null;
 	private String nameSearch = null;
-	private Date updateDateSearch = null;
+	
 	private List<User> resultSearch;
 	IUserService service;
 	private DataTable dtResult;
@@ -41,7 +39,7 @@ public class UserManaged implements Serializable {
 
 	public UserManaged() {
 		super();
-		
+
 		service = new UserService();
 	}
 
@@ -53,20 +51,12 @@ public class UserManaged implements Serializable {
 		this.selected = selected;
 	}
 
-	public String getUserIdSearch() {
-		return userIdSearch;
+	public String getIdSearch() {
+		return idSearch;
 	}
 
-	public void setUserIdSearch(String userIdSearch) {
-		this.userIdSearch = userIdSearch;
-	}
-
-	public Date getUpdateDateSearch() {
-		return updateDateSearch;
-	}
-
-	public void setUpdateDateSearch(Date updateDateSearch) {
-		this.updateDateSearch = updateDateSearch;
+	public void setIdSearch(String idSearch) {
+		this.idSearch = idSearch;
 	}
 
 	public List<User> getResultSearch() {
@@ -83,8 +73,7 @@ public class UserManaged implements Serializable {
 	}
 
 	public void reset() {
-		this.userIdSearch = null;
-		this.updateDateSearch = null;
+		this.idSearch = null;		
 		this.nameSearch = null;
 		this.resultSearch = null;
 		this.selected = null;
@@ -99,16 +88,17 @@ public class UserManaged implements Serializable {
 	public void search() {
 
 		User ctr = new User();
-		ctr.setUserId(userIdSearch);
+		ctr.setUserId(idSearch);
 		ctr.setFirstName(nameSearch);
-		ctr.setUpdateDate(updateDateSearch);
+		
+
 		resultSearch = service.search(ctr);
 
 	}
 
 	public void addAction() {
 		selected = new User();
-		
+
 	}
 
 	public boolean checkDupId(String id) {
@@ -118,37 +108,46 @@ public class UserManaged implements Serializable {
 			return false;
 		return true;
 	}
-
+	public void generateData(){
+		for(int i=0;i<1000;i++){
+			User row=new User();
+			row.setUserId("UserId"+String.valueOf(i));
+			row.setFirstName("John "+String.valueOf(i));
+			row.setLastName("Doe "+String.valueOf(i));
+			service.insert(row);
+		}
+	}
 	public void save() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		
+
 		if (selected.getId() != null)
 			service.update(selected);
-		else{
+		else {
 			if (checkDupId(selected.getUserId())) {
-				RequestContext.getCurrentInstance().addCallbackParam(
-						"checkBusinessFail", true);
-				context.addMessage("growl", new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Add Error",
-						"Duplicate ID:"+selected.getUserId()));
+				RequestContext.getCurrentInstance().addCallbackParam("checkBusinessFail", true);
+				context.addMessage("growl", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Add Error", "Duplicate ID:"
+						+ selected.getUserId()));
 				return;
 			}
 			service.insert(selected);
 		}
-		context.addMessage("growl", new FacesMessage("Operation Success",
-				"Save ID: " + selected.getUserId()));
+		context.addMessage("growl", new FacesMessage("Operation Success", "Save ID: " + selected.getUserId()));
 		search();
 
 	}
 
 	public void delete() {
+		int result = 0;
+		result = service.delete(selected.getId());
+		if (result != 0) {
+			search();
+			FacesContext.getCurrentInstance().addMessage("growl",
+					new FacesMessage("Operation Success", "Delete ID: " + selected.getUserId()));
+		} else {
+			FacesContext.getCurrentInstance().addMessage("growl",
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Delete Error", "Delete ID: " + selected.getUserId()));
+		}
 
-		service.delete(selected.getId());
-		search();
-		FacesContext.getCurrentInstance().addMessage(
-				"growl",
-				new FacesMessage("Operation Success", "Delete ID: "
-						+ selected.getUserId()));
 	}
 
 }
