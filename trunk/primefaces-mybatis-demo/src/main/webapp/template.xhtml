@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:pe="http://primefaces.org/ui/extensions">
+	xmlns:pe="http://primefaces.org/ui/extensions">
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Primefaces Ajax CRUD</title>
@@ -56,6 +56,15 @@
 				$("#menuSecurity").find(".ui-state-active").removeClass("ui-state-active");
 				$(link).addClass("ui-state-active");
 			}
+			var t;
+
+			function startTimer() {
+			   t = setTimeout("statusDialog.show()", 1100);
+			}
+			
+			function stopTimer() {
+			   clearTimeout(t);
+			}
 			/* ]]> */
 		</h:outputScript>
 	<p:layout fullPage="true">
@@ -69,6 +78,7 @@
 						</p:menu>
 					</p:tab>
 				</p:accordionPanel>
+				
 			</h:form>
 		</p:layoutUnit>
 		<p:layoutUnit position="center">
@@ -101,6 +111,14 @@
 					</div>
 				</f:facet>
 			</pe:ajaxErrorHandler>
+			<p:ajaxStatus onstart="startTimer();" onsuccess="statusDialog.hide(); stopTimer();"
+					onerror="errorDialog.show(); stopTimer(); statusDialog.hide()" />
+				<p:dialog modal="true" widgetVar="statusDialog" header="Loading..." draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading-bar.gif" />
+				</p:dialog>
+				<p:dialog modal="true" widgetVar="errorDialog" header="Error" draggable="false" closable="false">
+         			Key 'F5' for Reload
+         		</p:dialog>
 		</p:layoutUnit>
 	</p:layout>
 </h:body>

@@ -18,8 +18,7 @@
 							immediate="true" action="#{userManaged.reset}" process="@this" id="btnReset" />
 						<p:commandButton id="btnNew" value="New" oncomplete="rowDialog.show()" action="#{userManaged.addAction}"
 							icon="ui-icon-circle-plus" update=":detail:display" />
-						<p:commandButton id="btnGen" value="Gen" action="#{userManaged.generateData}"
-							icon="ui-icon-circle-plus"  />	
+						
 					</f:facet>
 					<p:outputLabel value="User Id" />
 					<p:inputText value="#{userManaged.idSearch}" label="userId" id="idSearch" />
